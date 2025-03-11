@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EMOTEXT - Emotion Detection</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <style>
         :root {
             --primary-color: #4361ee;
@@ -15,998 +21,1421 @@
             --card-bg: #ffffff;
             --text-color: #2b2d42;
             --text-light: #8d99ae;
-            --joy-color: #ffc300;
-            --anger-color: #e71d36;
-            --sadness-color: #000000;
-            --fear-color: #8338ec;
-            --surprise-color: #06d6a0;
-            --disgust-color: #9d4edd;
-            --neutral-color: #adb5bd;
+            --joy-color: #ffc300;         /* Bright Yellow (original) */
+            --anger-color: #e71d36;       /* Red (original) */
+            --sadness-color: #000000;     /* Black (original) */
+            --fear-color: #8338ec;        /* Violet (original) */
+            --surprise-color: #06d6a0;    /* Teal (original) */
+            --disgust-color: #9d4edd;     /* Purple (original) */
+            --neutral-color: #adb5bd;     /* Gray (original) */
+            --admiration-color: #ffd700;  /* Gold */
+            --approval-color: #32cd32;    /* Lime Green */
+            --gratitude-color: #ff69b4;   /* Hot Pink */
+            --amusement-color: #ffeb3b;   /* Yellow */
+            --curiosity-color: #00ced1;   /* Dark Turquoise */
+            --love-color: #ff1493;        /* Deep Pink */
+            --disapproval-color: #ff4500; /* Orange Red */
+            --optimism-color: #ffa500;    /* Orange */
+            --confusion-color: #9370db;   /* Medium Purple */
+            --disappointment-color: #4682b4; /* Steel Blue */
+            --realization-color: #f0e68c; /* Khaki */
+            --caring-color: #ff6347;      /* Tomato */
+            --excitement-color: #ff00ff;  /* Magenta */
+            --desire-color: #dc143c;      /* Crimson */
+            --remorse-color: #4169e1;     /* Royal Blue */
+            --embarrassment-color: #ff9999; /* Light Red */
+            --nervousness-color: #dda0dd; /* Plum */
+            --relief-color: #98fb98;      /* Pale Green */
+            --pride-color: #b8860b;       /* Dark Goldenrod */
+            --grief-color: #191970;       /* Midnight Blue */
+            --annoyance-color: #cd5c5c;   /* Indian Red */
             --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             --transition-speed: 0.3s;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--background-color);
+        background-image: radial-gradient(#e9ecef 1px, transparent 1px);
+        background-size: 20px 20px;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 40px;
+      }
+
+      .logo-container {
+        display: inline-block;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        display: inline-block;
+      }
+
+      .logo::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 5px;
+        bottom: 5px;
+        left: 0;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transform: scaleX(0);
+        transform-origin: bottom right;
+        transition: transform 0.5s;
+        z-index: -1;
+      }
+
+      .logo:hover::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+      }
+
+      .subtitle {
+        color: var(--text-light);
+        font-size: 1.2rem;
+        font-weight: 300;
+        margin-bottom: 20px;
+        opacity: 0;
+        animation: fadeInUp 1s ease-out forwards;
+        animation-delay: 0.5s;
+      }
+
+      .card {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
+        padding: 30px;
+        margin-bottom: 30px;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideInUp 0.6s ease-out forwards;
+        transition: transform var(--transition-speed),
+          box-shadow var(--transition-speed);
+      }
+
+      .card:hover {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .card:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+      }
+
+      .card-title::after {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 3px;
+        bottom: -8px;
+        left: 0;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transition: width 0.3s ease;
+      }
+
+      .card:hover .card-title::after {
+        width: 100%;
+      }
+
+      .input-section {
+        margin-bottom: 20px;
+      }
+
+      .textarea-container {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 1rem;
+        resize: vertical;
+        transition: all 0.3s;
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .floating-label {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        color: var(--text-light);
+        transition: all 0.3s;
+        pointer-events: none;
+      }
+
+      textarea:focus + .floating-label,
+      textarea:not(:placeholder-shown) + .floating-label {
+        top: -10px;
+        left: 12px;
+        font-size: 0.8rem;
+        background-color: white;
+        padding: 0 8px;
+        color: var(--primary-color);
+      }
+
+      .btn {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn i {
+        margin-right: 8px;
+      }
+
+      .btn::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: -100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::after {
+        left: 100%;
+      }
+
+      #result-section {
+        display: none;
+        opacity: 0;
+        transform: scale(0.95);
+        transition: all 0.5s;
+      }
+
+      #result-section.active {
+        display: block;
+        animation: fadeInScale 0.5s forwards;
+      }
+
+      .emotion-result {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.9),
+          rgba(255, 255, 255, 0.7)
+        );
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .emotion-label {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 15px 0;
+        text-transform: uppercase;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: colorPulse 2s infinite alternate;
+      }
+
+      .emotion-label.neutral {
+        background-color: var(--neutral-color);
+      }
+      .emotion-label.admiration {
+        background-color: var(--admiration-color);
+      }
+      .emotion-label.approval {
+        background-color: var(--approval-color);
+      }
+      .emotion-label.gratitude {
+        background-color: var(--gratitude-color);
+      }
+      .emotion-label.amusement {
+        background-color: var(--amusement-color);
+      }
+      .emotion-label.curiosity {
+        background-color: var(--curiosity-color);
+      }
+      .emotion-label.love {
+        background-color: var(--love-color);
+      }
+      .emotion-label.disapproval {
+        background-color: var(--disapproval-color);
+      }
+      .emotion-label.optimism {
+        background-color: var(--optimism-color);
+      }
+      .emotion-label.anger {
+        background-color: var(--anger-color);
+      }
+      .emotion-label.joy {
+        background-color: var(--joy-color);
+      }
+      .emotion-label.confusion {
+        background-color: var(--confusion-color);
+      }
+      .emotion-label.sadness {
+        background-color: var(--sadness-color);
+      }
+      .emotion-label.disappointment {
+        background-color: var(--disappointment-color);
+      }
+      .emotion-label.realization {
+        background-color: var(--realization-color);
+      }
+      .emotion-label.caring {
+        background-color: var(--caring-color);
+      }
+      .emotion-label.surprise {
+        background-color: var(--surprise-color);
+      }
+      .emotion-label.excitement {
+        background-color: var(--excitement-color);
+      }
+      .emotion-label.disgust {
+        background-color: var(--disgust-color);
+      }
+      .emotion-label.desire {
+        background-color: var(--desire-color);
+      }
+      .emotion-label.fear {
+        background-color: var(--fear-color);
+      }
+      .emotion-label.remorse {
+        background-color: var(--remorse-color);
+      }
+      .emotion-label.embarrassment {
+        background-color: var(--embarrassment-color);
+      }
+      .emotion-label.nervousness {
+        background-color: var(--nervousness-color);
+      }
+      .emotion-label.relief {
+        background-color: var(--relief-color);
+      }
+      .emotion-label.pride {
+        background-color: var(--pride-color);
+      }
+      .emotion-label.grief {
+        background-color: var(--grief-color);
+      }
+      .emotion-label.annoyance {
+        background-color: var(--annoyance-color);
+      }
+
+      .confidence {
+        font-size: 1.1rem;
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-weight: 500;
+      }
+
+      .confidence-meter {
+        width: 80%;
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .confidence-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        border-radius: 4px;
+        width: 0;
+        transition: width 1s ease-in-out;
+      }
+
+      .chart-container {
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 12px;
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+      }
+
+      .chart-title {
+        text-align: center;
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        color: var(--secondary-color);
+      }
+
+      .emotion-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+
+      .emotion-name {
+        width: 100px;
+        text-align: right;
+        padding-right: 15px;
+        font-weight: 500;
+        color: var(--text-color);
+      }
+
+      .bar-container {
+        flex-grow: 1;
+        background-color: rgba(236, 240, 241, 0.6);
+        border-radius: 50px;
+        overflow: hidden;
+        height: 24px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .bar {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 15px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.9rem;
+        width: 0;
+        transition: width 1s ease-out;
+        border-radius: 50px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bar::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.2) 50%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+      }
+
+      /* Different colors for different emotions */
+      .neutral {
+        background-color: var(--neutral-color);
+      }
+      .admiration {
+        background-color: var(--admiration-color);
+      }
+      .approval {
+        background-color: var(--approval-color);
+      }
+      .gratitude {
+        background-color: var(--gratitude-color);
+      }
+      .amusement {
+        background-color: var(--amusement-color);
+      }
+      .curiosity {
+        background-color: var(--curiosity-color);
+      }
+      .love {
+        background-color: var(--love-color);
+      }
+      .disapproval {
+        background-color: var(--disapproval-color);
+      }
+      .optimism {
+        background-color: var(--optimism-color);
+      }
+      .anger {
+        background-color: var(--anger-color);
+      }
+      .joy {
+        background-color: var(--joy-color);
+      }
+      .confusion {
+        background-color: var(--confusion-color);
+      }
+      .sadness {
+        background-color: var(--sadness-color);
+      }
+      .disappointment {
+        background-color: var(--disappointment-color);
+      }
+      .realization {
+        background-color: var(--realization-color);
+      }
+      .caring {
+        background-color: var(--caring-color);
+      }
+      .surprise {
+        background-color: var(--surprise-color);
+      }
+      .excitement {
+        background-color: var(--excitement-color);
+      }
+      .disgust {
+        background-color: var(--disgust-color);
+      }
+      .desire {
+        background-color: var(--desire-color);
+      }
+      .fear {
+        background-color: var(--fear-color);
+      }
+      .remorse {
+        background-color: var(--remorse-color);
+      }
+      .embarrassment {
+        background-color: var(--embarrassment-color);
+      }
+      .nervousness {
+        background-color: var(--nervousness-color);
+      }
+      .relief {
+        background-color: var(--relief-color);
+      }
+      .pride {
+        background-color: var(--pride-color);
+      }
+      .grief {
+        background-color: var(--grief-color);
+      }
+      .annoyance {
+        background-color: var(--annoyance-color);
+      }
+
+      .history-section {
+        margin-top: 40px;
+      }
+
+      .history-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 25px;
+      }
+
+      .history-title::after {
+        content: "";
+        position: absolute;
+        width: 60px;
+        height: 3px;
+        bottom: -8px;
+        left: 0;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+      }
+
+      .history-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .history-item {
+        padding: 20px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s;
+        border-top: 4px solid var(--neutral-color);
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .history-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .history-text {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+        color: var(--text-color);
+        line-height: 1.5;
+      }
+
+      .history-emotion {
+        font-weight: 600;
+        font-size: 1.1rem;
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 50px;
+        color: white;
+      }
+
+      .history-item.neutral {
+        border-top-color: var(--neutral-color);
+      }
+      .history-item.admiration {
+        border-top-color: var(--admiration-color);
+      }
+      .history-item.approval {
+        border-top-color: var(--approval-color);
+      }
+      .history-item.gratitude {
+        border-top-color: var(--gratitude-color);
+      }
+      .history-item.amusement {
+        border-top-color: var(--amusement-color);
+      }
+      .history-item.curiosity {
+        border-top-color: var(--curiosity-color);
+      }
+      .history-item.love {
+        border-top-color: var(--love-color);
+      }
+      .history-item.disapproval {
+        border-top-color: var(--disapproval-color);
+      }
+      .history-item.optimism {
+        border-top-color: var(--optimism-color);
+      }
+      .history-item.anger {
+        border-top-color: var(--anger-color);
+      }
+      .history-item.joy {
+        border-top-color: var(--joy-color);
+      }
+      .history-item.confusion {
+        border-top-color: var(--confusion-color);
+      }
+      .history-item.sadness {
+        border-top-color: var(--sadness-color);
+      }
+      .history-item.disappointment {
+        border-top-color: var(--disappointment-color);
+      }
+      .history-item.realization {
+        border-top-color: var(--realization-color);
+      }
+      .history-item.caring {
+        border-top-color: var(--caring-color);
+      }
+      .history-item.surprise {
+        border-top-color: var(--surprise-color);
+      }
+      .history-item.excitement {
+        border-top-color: var(--excitement-color);
+      }
+      .history-item.disgust {
+        border-top-color: var(--disgust-color);
+      }
+      .history-item.desire {
+        border-top-color: var(--desire-color);
+      }
+      .history-item.fear {
+        border-top-color: var(--fear-color);
+      }
+      .history-item.remorse {
+        border-top-color: var(--remorse-color);
+      }
+      .history-item.embarrassment {
+        border-top-color: var(--embarrassment-color);
+      }
+      .history-item.nervousness {
+        border-top-color: var(--nervousness-color);
+      }
+      .history-item.relief {
+        border-top-color: var(--relief-color);
+      }
+      .history-item.pride {
+        border-top-color: var(--pride-color);
+      }
+      .history-item.grief {
+        border-top-color: var(--grief-color);
+      }
+      .history-item.annoyance {
+        border-top-color: var(--annoyance-color);
+      }
+
+      .history-emotion.neutral {
+        background-color: var(--neutral-color);
+      }
+      .history-emotion.admiration {
+        background-color: var(--admiration-color);
+      }
+      .history-emotion.approval {
+        background-color: var(--approval-color);
+      }
+      .history-emotion.gratitude {
+        background-color: var(--gratitude-color);
+      }
+      .history-emotion.amusement {
+        background-color: var(--amusement-color);
+      }
+      .history-emotion.curiosity {
+        background-color: var(--curiosity-color);
+      }
+      .history-emotion.love {
+        background-color: var(--love-color);
+      }
+      .history-emotion.disapproval {
+        background-color: var(--disapproval-color);
+      }
+      .history-emotion.optimism {
+        background-color: var(--optimism-color);
+      }
+      .history-emotion.anger {
+        background-color: var(--anger-color);
+      }
+      .history-emotion.joy {
+        background-color: var(--joy-color);
+      }
+      .history-emotion.confusion {
+        background-color: var(--confusion-color);
+      }
+      .history-emotion.sadness {
+        background-color: var(--sadness-color);
+      }
+      .history-emotion.disappointment {
+        background-color: var(--disappointment-color);
+      }
+      .history-emotion.realization {
+        background-color: var(--realization-color);
+      }
+      .history-emotion.caring {
+        background-color: var(--caring-color);
+      }
+      .history-emotion.surprise {
+        background-color: var(--surprise-color);
+      }
+      .history-emotion.excitement {
+        background-color: var(--excitement-color);
+      }
+      .history-emotion.disgust {
+        background-color: var(--disgust-color);
+      }
+      .history-emotion.desire {
+        background-color: var(--desire-color);
+      }
+      .history-emotion.fear {
+        background-color: var(--fear-color);
+      }
+      .history-emotion.remorse {
+        background-color: var(--remorse-color);
+      }
+      .history-emotion.embarrassment {
+        background-color: var(--embarrassment-color);
+      }
+      .history-emotion.nervousness {
+        background-color: var(--nervousness-color);
+      }
+      .history-emotion.relief {
+        background-color: var(--relief-color);
+      }
+      .history-emotion.pride {
+        background-color: var(--pride-color);
+      }
+      .history-emotion.grief {
+        background-color: var(--grief-color);
+      }
+      .history-emotion.annoyance {
+        background-color: var(--annoyance-color);
+      }
+
+      .history-timestamp {
+        font-size: 0.8rem;
+        color: var(--text-light);
+        margin-top: 8px;
+      }
+
+      .loading {
+        text-align: center;
+        display: none;
+        margin: 30px 0;
+      }
+
+      .loading-text {
+        margin-top: 15px;
+        color: var(--text-light);
+        font-weight: 500;
+      }
+
+      .bouncing-loader {
+        display: flex;
+        justify-content: center;
+      }
+
+      .bouncing-loader > div {
+        width: 16px;
+        height: 16px;
+        margin: 0 5px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        opacity: 1;
+        animation: bouncing-loader 0.6s infinite alternate;
+      }
+
+      .bouncing-loader > div:nth-child(2) {
+        animation-delay: 0.2s;
+        background-color: var(--secondary-color);
+      }
+
+      .bouncing-loader > div:nth-child(3) {
+        animation-delay: 0.4s;
+        background-color: var(--accent-color);
+      }
+
+      .emotion-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        opacity: 0.9;
+      }
+
+      /* Floating particles background */
+      .particles-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: float 15s infinite linear;
+      }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-light);
+      }
+
+      .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        color: #e9ecef;
+      }
+
+      .empty-text {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      .empty-subtext {
+        font-size: 0.9rem;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+      }
+
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .tooltip .tooltip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        
-        body {
-            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            background-image: radial-gradient(#e9ecef 1px, transparent 1px);
-            background-size: 20px 20px;
-            overflow-x: hidden;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
-        
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes colorPulse {
+        0% {
+          filter: brightness(1);
+        }
+        100% {
+          filter: brightness(1.2);
+        }
+      }
+
+      @keyframes bouncing-loader {
+        from {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(-15px);
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) translateX(0) rotate(0deg);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translateY(-1000px) translateX(200px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      @keyframes emotionAppear {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive design */
+      @media (max-width: 768px) {
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+          padding: 15px;
         }
-        
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 40px;
-        }
-        
-        .logo-container {
-            display: inline-block;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
+
         .logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-             background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            display: inline-block;
+          font-size: 2.5rem;
         }
-        
-        .logo::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 5px;
-            bottom: 5px;
-            left: 0;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.5s;
-            z-index: -1;
-        }
-        
-        .logo:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-        
-        .subtitle {
-            color: var(--text-light);
-            font-size: 1.2rem;
-            font-weight: 300;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeInUp 1s ease-out forwards;
-            animation-delay: 0.5s;
-        }
-        
+
         .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            padding: 30px;
-            margin-bottom: 30px;
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideInUp 0.6s ease-out forwards;
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+          padding: 20px;
         }
-        
-        .card:hover {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--secondary-color);
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .card-title::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 3px;
-            bottom: -8px;
-            left: 0;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            transition: width 0.3s ease;
-        }
-        
-        .card:hover .card-title::after {
-            width: 100%;
-        }
-        
-        .input-section {
-            margin-bottom: 20px;
-        }
-        
-        .textarea-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        
-        textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            resize: vertical;
-            transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-        }
-        
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-        }
-        
-        .floating-label {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            color: var(--text-light);
-            transition: all 0.3s;
-            pointer-events: none;
-        }
-        
-        textarea:focus + .floating-label,
-        textarea:not(:placeholder-shown) + .floating-label {
-            top: -10px;
-            left: 12px;
-            font-size: 0.8rem;
-            background-color: white;
-            padding: 0 8px;
-            color: var(--primary-color);
-        }
-        
-        .btn {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(1px);
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: -100%;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0) 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                rgba(255, 255, 255, 0) 100%);
-            transition: left 0.5s;
-        }
-        
-        .btn:hover::after {
-            left: 100%;
-        }
-        
-        #result-section {
-            display: none;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.5s;
-        }
-        
-        #result-section.active {
-            display: block;
-            animation: fadeInScale 0.5s forwards;
-        }
-        
-        .emotion-result {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .emotion-label {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 15px 0;
-            text-transform: uppercase;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: colorPulse 2s infinite alternate;
-        }
-        
-        .emotion-label.joy { background-color: var(--joy-color); }
-        .emotion-label.anger { background-color: var(--anger-color); }
-        .emotion-label.sadness { background-color: var(--sadness-color); }
-        .emotion-label.fear { background-color: var(--fear-color); }
-        .emotion-label.surprise { background-color: var(--surprise-color); }
-        .emotion-label.disgust { background-color: var(--disgust-color); }
-        
-        
-        .confidence {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .confidence-meter {
-            width: 80%;
-            height: 8px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .confidence-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border-radius: 4px;
-            width: 0;
-            transition: width 1s ease-in-out;
-        }
-        
-        .chart-container {
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 12px;
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-        }
-        
-        .chart-title {
-            text-align: center;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: var(--secondary-color);
-        }
-        
-        .emotion-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        
-        .emotion-name {
-            width: 100px;
-            text-align: right;
-            padding-right: 15px;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-        
-        .bar-container {
-            flex-grow: 1;
-            background-color: rgba(236, 240, 241, 0.6);
-            border-radius: 50px;
-            overflow: hidden;
-            height: 24px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .bar {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 15px;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-            width: 0;
-            transition: width 1s ease-out;
-            border-radius: 50px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-        }
-        
-        /* Different colors for different emotions */
-        .joy { background-color: var(--joy-color);  }
-        .anger { background-color: var(--anger-color); }
-        .sadness { background-color: var(--sadness-color); }
-        .fear { background-color: var(--fear-color); }
-        .surprise { background-color: var(--surprise-color); }
-        .disgust { background-color: var(--disgust-color); }
-        
-        
-        .history-section {
-            margin-top: 40px;
-        }
-        
-        .history-title {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 25px;
-        }
-        
-        .history-title::after {
-            content: '';
-            position: absolute;
-            width: 60px;
-            height: 3px;
-            bottom: -8px;
-            left: 0;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-        }
-        
+
         .history-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+          grid-template-columns: 1fr;
         }
-        
-        .history-item {
-            padding: 20px;
-            border-radius: 12px;
-            background-color: white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-            border-top: 4px solid var(--neutral-color);
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .history-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .history-text {
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            color: var(--text-color);
-            line-height: 1.5;
-        }
-        
-        .history-emotion {
-            font-weight: 600;
-            font-size: 1.1rem;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 50px;
-            color: white;
-        }
-        
-        .history-item.joy { border-top-color: var(--joy-color); }
-        .history-item.anger { border-top-color: var(--anger-color); }
-        .history-item.sadness { border-top-color: var(--sadness-color); }
-        .history-item.fear { border-top-color: var(--fear-color); }
-        .history-item.surprise { border-top-color: var(--surprise-color); }
-        .history-item.disgust { border-top-color: var(--disgust-color); }
-        
-        .history-emotion.joy { background-color: var(--joy-color); }
-        .history-emotion.anger { background-color: var(--anger-color); }
-        .history-emotion.sadness { background-color: var(--sadness-color); }
-        .history-emotion.fear { background-color: var(--fear-color); }
-        .history-emotion.surprise { background-color: var(--surprise-color); }
-        .history-emotion.disgust { background-color: var(--disgust-color); }
-        
-        .history-timestamp {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-top: 8px;
-        }
-        
-        .loading {
-            text-align: center;
-            display: none;
-            margin: 30px 0;
-        }
-        
-        .loading-text {
-            margin-top: 15px;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-        
-        .bouncing-loader {
-            display: flex;
-            justify-content: center;
-        }
-        
-        .bouncing-loader > div {
-            width: 16px;
-            height: 16px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            opacity: 1;
-            animation: bouncing-loader 0.6s infinite alternate;
-        }
-        
-        .bouncing-loader > div:nth-child(2) {
-            animation-delay: 0.2s;
-            background-color: var(--secondary-color);
-        }
-        
-        .bouncing-loader > div:nth-child(3) {
-            animation-delay: 0.4s;
-            background-color: var(--accent-color);
-        }
-        
-        .emotion-icon {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-        
-        /* Floating particles background */
-        .particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: float 15s infinite linear;
-        }
-        
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-light);
-        }
-        
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #e9ecef;
-        }
-        
-        .empty-text {
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
-        
-        .empty-subtext {
-            font-size: 0.9rem;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        /* Tooltip */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-        }
-        
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .tooltip .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #333 transparent transparent transparent;
-        }
-        
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        @keyframes colorPulse {
-            0% {
-                filter: brightness(1);
-            }
-            100% {
-                filter: brightness(1.2);
-            }
-        }
-        
-        @keyframes bouncing-loader {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateY(-15px);
-                opacity: 0.5;
-            }
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-1000px) translateX(200px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes emotionAppear {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .history-container {
-                grid-template-columns: 1fr;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Particle background -->
     <div class="particles-container" id="particles">
-        <!-- Particles will be added via JavaScript -->
+      <!-- Particles will be added via JavaScript -->
     </div>
-    
+
     <div class="container">
-        <header class="animate__animated animate__fadeIn">
-            <div class="logo-container">
-                <h1 class="logo">EMOTEXT</h1>
-            </div>
-            <div class="subtitle">Discover the emotions hidden in your text with Natural Language Processing</div>
-        </header>
-        
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-keyboard"></i> Text Analysis</h2>
-            
-            <div class="input-section">
-                <div class="textarea-container">
-                    <textarea id="input-text" placeholder=" "></textarea>
-                    <label for="input-text" class="floating-label">Type or paste text to analyze emotions...</label>
-                </div>
-                
-                <button id="analyze-btn" class="btn">
-                    <i class="fas fa-brain"></i> Analyze Emotions
-                </button>
-                
-                <div class="loading" id="loading">
-                    <div class="bouncing-loader">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                    <p class="loading-text">Analyzing emotional context...</p>
-                </div>
-            </div>
-            
-            <div id="result-section">
-                <div class="emotion-result">
-                    <div id="emotion-icon" class="emotion-icon">
-                        <i class="far fa-smile"></i>
-                    </div>
-                    <div class="emotion-label" id="primary-emotion">Joy</div>
-                    
-                    <div class="confidence" id="confidence-score">Confidence: 85%</div>
-                    <div class="confidence-meter">
-                        <div class="confidence-fill" id="confidence-fill"></div>
-                    </div>
-                </div>
-                
-                <div class="chart-container">
-                    <h3 class="chart-title">Emotion Distribution</h3>
-                    <div id="emotion-bars">
-                        <!-- Emotion bars will be inserted here via JavaScript -->
-                    </div>
-                </div>
-            </div>
+      <header class="animate__animated animate__fadeIn">
+        <div class="logo-container">
+          <h1 class="logo">EMOTEXT</h1>
         </div>
-        
-        <div class="card history-section">
-            <h2 class="card-title history-title"><i class="fas fa-history"></i> Analysis History</h2>
-            <div id="history-container" class="history-container">
-                <!-- History items will be added here via JavaScript -->
-                
-                <div class="empty-state" id="empty-history">
-                    <i class="fas fa-inbox empty-icon"></i>
-                    <p class="empty-text">No analysis history yet</p>
-                    <p class="empty-subtext">Analyzed texts will appear here</p>
-                </div>
-            </div>
+        <div class="subtitle">
+          Discover the emotions hidden in your text with Natural Language
+          Processing
         </div>
+      </header>
+
+      <div class="card">
+        <h2 class="card-title">
+          <i class="fas fa-keyboard"></i> Text Analysis
+        </h2>
+
+        <div class="input-section">
+          <div class="textarea-container">
+            <textarea id="input-text" placeholder=" "></textarea>
+            <label for="input-text" class="floating-label"
+              >Type or paste text to analyze emotions...</label
+            >
+          </div>
+
+          <button id="analyze-btn" class="btn">
+            <i class="fas fa-brain"></i> Analyze Emotions
+          </button>
+
+          <div class="loading" id="loading">
+            <div class="bouncing-loader">
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <p class="loading-text">Analyzing emotional context...</p>
+          </div>
+        </div>
+
+        <div id="result-section">
+          <div class="emotion-result">
+            <div id="emotion-icon" class="emotion-icon">
+              <i class="far fa-smile"></i>
+            </div>
+            <div class="emotion-label" id="primary-emotion">Joy</div>
+
+            <div class="confidence" id="confidence-score">Confidence: 85%</div>
+            <div class="confidence-meter">
+              <div class="confidence-fill" id="confidence-fill"></div>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <h3 class="chart-title">Emotion Distribution</h3>
+            <div id="emotion-bars">
+              <!-- Emotion bars will be inserted here via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card history-section">
+        <h2 class="card-title history-title">
+          <i class="fas fa-history"></i> Analysis History
+        </h2>
+        <div id="history-container" class="history-container">
+          <!-- History items will be added here via JavaScript -->
+
+          <div class="empty-state" id="empty-history">
+            <i class="fas fa-inbox empty-icon"></i>
+            <p class="empty-text">No analysis history yet</p>
+            <p class="empty-subtext">Analyzed texts will appear here</p>
+          </div>
+        </div>
+      </div>
     </div>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Create background particles
-            createParticles();
-            
-            const analyzeBtn = document.getElementById('analyze-btn');
-            const inputText = document.getElementById('input-text');
-            const resultSection = document.getElementById('result-section');
-            const primaryEmotion = document.getElementById('primary-emotion');
-            const confidenceScore = document.getElementById('confidence-score');
-            const confidenceFill = document.getElementById('confidence-fill');
-            const emotionIcon = document.getElementById('emotion-icon');
-            const emotionBars = document.getElementById('emotion-bars');
-            const historyContainer = document.getElementById('history-container');
-            const loadingIndicator = document.getElementById('loading');
-            const emptyHistory = document.getElementById('empty-history');
-            
-            // Store analysis history
-            let analysisHistory = [];
-            
-            // Emotion icons mapping
-            const emotionIcons = {
-                joy: '<i class="far fa-laugh-beam"></i>',
-                anger: '<i class="far fa-angry"></i>',
-                sadness: '<i class="far fa-sad-tear"></i>',
-                fear: '<i class="far fa-grimace"></i>',
-                surprise: '<i class="far fa-surprise"></i>',
-                disgust: '<i class="far fa-dizzy"></i>'
-            };
-            
-            analyzeBtn.addEventListener('click', function() {
-                const text = inputText.value.trim();
-                
-                if (text === '') {
-                    shakeElement(inputText);
-                    return;
-                }
-                
-                // Show loading indicator
-                loadingIndicator.style.display = 'block';
-                resultSection.style.display = 'none';
-                
-                // Make API request to our Flask backend
-                fetch('/analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text: text }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Hide loading indicator
-                    loadingIndicator.style.display = 'none';
-                    
-                    // Display results
-                    displayResults(data, text);
-                })
-                .catch(error => {
-                    loadingIndicator.style.display = 'none';
-                    alert('Error analyzing text: ' + error.message);
-                    console.error('Error:', error);
-                });
-            });
-            
-            function displayResults(data, text) {
-                // Show result section with animation
-                resultSection.style.display = 'block';
-                resultSection.classList.add('active');
-                
-                // Update primary emotion and confidence
-                primaryEmotion.textContent = capitalizeFirstLetter(data.emotion);
-                primaryEmotion.className = 'emotion-label';
-                primaryEmotion.classList.add(data.emotion.toLowerCase());
-                
-                // Update emotion icon
-                emotionIcon.innerHTML = emotionIcons[data.emotion.toLowerCase()] || '<i class="far fa-meh"></i>';
-                
-                const confidencePercent = Math.round(data.confidence * 100);
-                confidenceScore.textContent = `Confidence: ${confidencePercent}%`;
-                
-                // Animate confidence meter
-                setTimeout(() => {
-                    confidenceFill.style.width = `${confidencePercent}%`;
-                }, 100);
-                
-                // Clear previous emotion bars
-                emotionBars.innerHTML = '';
-                
-                // Get sorted emotions by probability
-                const emotions = Object.entries(data.all_probabilities)
-                    .sort((a, b) => b[1] - a[1]);
-                
-                // Create emotion bars with animation delay
-                emotions.forEach(([emotion, probability], index) => {
-                    const widthPercent = Math.round(probability * 100);
-                    
-                    const barContainer = document.createElement('div');
-                    barContainer.className = 'emotion-bar';
-                    barContainer.style.animationDelay = `${index * 0.1}s`;
-                    
-                    barContainer.innerHTML = `
-                        <div class="emotion-name">${capitalizeFirstLetter(emotion)}</div>
-                        <div class="bar-container">
-                            <div class="bar ${emotion.toLowerCase()}" style="width: 0%">
-                                ${widthPercent}%
-                            </div>
-                        </div>
-                    `;
-                    
-                    emotionBars.appendChild(barContainer);
-                    
-                    // Trigger animations
-                    setTimeout(() => {
-                        barContainer.style.opacity = '1';
-                        barContainer.style.transform = 'translateX(0)';
-                        barContainer.style.animation = 'emotionAppear 0.5s forwards';
-                        
-                        // Animate the bar width
-                        setTimeout(() => {
-                            const bar = barContainer.querySelector('.bar');
-                            bar.style.width = `${widthPercent}%`;
-                        }, 100);
-                    }, index * 100);
-                });
-                
-                // Add to history
-                addToHistory(text, data.emotion, confidencePercent);
-            }
-            
-            function addToHistory(text, emotion, confidence) {
-                // Hide empty state if this is the first item
-                if (analysisHistory.length === 0) {
-                    emptyHistory.style.display = 'none';
-                }
-                
-                // Create history item
-                const historyItem = {
-                    text: text,
-                    emotion: emotion,
-                    confidence: confidence,
-                    timestamp: new Date()
-                };
-                
-               // Add to history array (limit to 6 items for display)
-               analysisHistory.unshift(historyItem);
-               if (analysisHistory.length > 6) {
-                   analysisHistory = analysisHistory.slice(0, 6);
+       document.addEventListener('DOMContentLoaded', function() {
+           // Create background particles
+           createParticles();
+
+           const analyzeBtn = document.getElementById('analyze-btn');
+           const inputText = document.getElementById('input-text');
+           const resultSection = document.getElementById('result-section');
+           const primaryEmotion = document.getElementById('primary-emotion');
+           const confidenceScore = document.getElementById('confidence-score');
+           const confidenceFill = document.getElementById('confidence-fill');
+           const emotionIcon = document.getElementById('emotion-icon');
+           const emotionBars = document.getElementById('emotion-bars');
+           const historyContainer = document.getElementById('history-container');
+           const loadingIndicator = document.getElementById('loading');
+           const emptyHistory = document.getElementById('empty-history');
+
+           // Store analysis history
+           let analysisHistory = [];
+
+           // Emotion icons mapping
+           const emotionIcons = {
+               neutral: '<i class="far fa-meh"></i>',
+               admiration: '<i class="far fa-star"></i>',
+               approval: '<i class="far fa-thumbs-up"></i>',
+               gratitude: '<i class="far fa-heart"></i>',
+               amusement: '<i class="far fa-laugh"></i>',
+               curiosity: '<i class="far fa-question-circle"></i>',
+               love: '<i class="far fa-heart"></i>',
+               disapproval: '<i class="far fa-thumbs-down"></i>',
+               optimism: '<i class="far fa-sun"></i>',
+               anger: '<i class="far fa-angry"></i>',
+               joy: '<i class="far fa-laugh-beam"></i>',
+               confusion: '<i class="far fa-confused"></i>',
+               sadness: '<i class="far fa-sad-tear"></i>',
+               disappointment: '<i class="far fa-frown"></i>',
+               realization: '<i class="far fa-lightbulb"></i>',
+               caring: '<i class="far fa-hand-holding-heart"></i>',
+               surprise: '<i class="far fa-surprise"></i>',
+               excitement: '<i class="far fa-grin-stars"></i>',
+               disgust: '<i class="far fa-dizzy"></i>',
+               desire: '<i class="far fa-eye"></i>',
+               fear: '<i class="far fa-grimace"></i>',
+               remorse: '<i class="far fa-sad-cry"></i>',
+               embarrassment: '<i class="far fa-flushed"></i>',
+               nervousness: '<i class="far fa-meh-rolling-eyes"></i>',
+               relief: '<i class="far fa-smile"></i>',
+               pride: '<i class="far fa-trophy"></i>',
+               grief: '<i class="far fa-sad-tear"></i>',
+               annoyance: '<i class="far fa-meh-blank"></i>'
+           };
+           analyzeBtn.addEventListener('click', function() {
+               const text = inputText.value.trim();
+
+               if (text === '') {
+                   shakeElement(inputText);
+                   return;
                }
-               
-               // Clear history container
-               const historyElements = document.querySelectorAll('.history-item');
-               historyElements.forEach(item => item.remove());
-               
-               // Render all history items
-               renderHistoryItems();
-           }
-           
-           function renderHistoryItems() {
-               analysisHistory.forEach((item, index) => {
-                   // Create history item element
-                   const historyItemElement = document.createElement('div');
-                   historyItemElement.className = `history-item ${item.emotion.toLowerCase()}`;
-                   historyItemElement.style.animationDelay = `${index * 0.1}s`;
-                   
-                   // Format timestamp
-                   const formattedTime = item.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                   const formattedDate = item.timestamp.toLocaleDateString();
-                   
-                   // Truncate text if too long
-                   const truncatedText = item.text.length > 100 ? 
-                       item.text.substring(0, 100) + '...' : 
-                       item.text;
-                   
-                   historyItemElement.innerHTML = `
-                       <div class="history-text">${truncatedText}</div>
-                       <div class="history-emotion ${item.emotion.toLowerCase()}">${capitalizeFirstLetter(item.emotion)}</div>
-                       <div class="history-timestamp">${formattedDate} at ${formattedTime}</div>
+
+               // Show loading indicator
+               loadingIndicator.style.display = 'block';
+               resultSection.style.display = 'none';
+
+               // Make API request to our Flask backend
+               fetch('/analyze', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify({ text: text }),
+               })
+               .then(response => response.json())
+               .then(data => {
+                   // Hide loading indicator
+                   loadingIndicator.style.display = 'none';
+
+                   // Display results
+                   displayResults(data, text);
+               })
+               .catch(error => {
+                   loadingIndicator.style.display = 'none';
+                   alert('Error analyzing text: ' + error.message);
+                   console.error('Error:', error);
+               });
+           });
+
+           function displayResults(data, text) {
+               // Show result section with animation
+               resultSection.style.display = 'block';
+               resultSection.classList.add('active');
+
+               // Update primary emotion and confidence
+               primaryEmotion.textContent = capitalizeFirstLetter(data.emotion);
+               primaryEmotion.className = 'emotion-label';
+               primaryEmotion.classList.add(data.emotion.toLowerCase());
+
+               // Update emotion icon
+               emotionIcon.innerHTML = emotionIcons[data.emotion.toLowerCase()] || '<i class="far fa-meh"></i>';
+
+               const confidencePercent = Math.round(data.confidence * 100);
+               confidenceScore.textContent = `Confidence: ${confidencePercent}%`;
+
+               // Animate confidence meter
+               setTimeout(() => {
+                   confidenceFill.style.width = `${confidencePercent}%`;
+               }, 100);
+
+               // Clear previous emotion bars
+               emotionBars.innerHTML = '';
+
+               // Get sorted emotions by probability
+               const emotions = Object.entries(data.all_probabilities)
+                   .sort((a, b) => b[1] - a[1]);
+
+               // Create emotion bars with animation delay
+               emotions.forEach(([emotion, probability], index) => {
+                   const widthPercent = Math.round(probability * 100);
+
+                   const barContainer = document.createElement('div');
+                   barContainer.className = 'emotion-bar';
+                   barContainer.style.animationDelay = `${index * 0.1}s`;
+
+                   barContainer.innerHTML = `
+                       <div class="emotion-name">${capitalizeFirstLetter(emotion)}</div>
+                       <div class="bar-container">
+                           <div class="bar ${emotion.toLowerCase()}" style="width: 0%">
+                               ${widthPercent}%
+                           </div>
+                       </div>
                    `;
-                   
-                   historyContainer.appendChild(historyItemElement);
-                   
-                   // Animate appearance with delay
+
+                   emotionBars.appendChild(barContainer);
+
+                   // Trigger animations
                    setTimeout(() => {
-                       historyItemElement.style.opacity = '1';
-                       historyItemElement.style.transform = 'translateY(0)';
+                       barContainer.style.opacity = '1';
+                       barContainer.style.transform = 'translateX(0)';
+                       barContainer.style.animation = 'emotionAppear 0.5s forwards';
+
+                       // Animate the bar width
+                       setTimeout(() => {
+                           const bar = barContainer.querySelector('.bar');
+                           bar.style.width = `${widthPercent}%`;
+                       }, 100);
                    }, index * 100);
                });
+
+               // Add to history
+               addToHistory(text, data.emotion, confidencePercent);
            }
-           
-           function capitalizeFirstLetter(string) {
-               return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-           }
-           
-           function shakeElement(element) {
-               element.classList.add('animate__animated', 'animate__shakeX');
-               setTimeout(() => {
-                   element.classList.remove('animate__animated', 'animate__shakeX');
-               }, 1000);
-           }
-           
-           function createParticles() {
-               const container = document.getElementById('particles');
-               const emotions = ['joy', 'anger', 'sadness', 'fear', 'surprise', 'disgust'];
-               const colors = {
-                   joy: '#ffc300',
-                   anger: '#e71d36',
-                   sadness: '#3a86ff',
-                   fear: '#8338ec',
-                   surprise: '#06d6a0',
-                   disgust: '#9d4edd'
-               };
-               
-               // Create 30 particles
-               for (let i = 0; i < 30; i++) {
-                   const emotion = emotions[Math.floor(Math.random() * emotions.length)];
-                   const particle = document.createElement('div');
-                   particle.className = 'particle';
-                   
-                   // Random size between 5 and 20px
-                   const size = Math.random() * 15 + 5;
-                   particle.style.width = `${size}px`;
-                   particle.style.height = `${size}px`;
-                   
-                   // Random position
-                   particle.style.left = `${Math.random() * 100}vw`;
-                   particle.style.top = `${Math.random() * 100}vh`;
-                   
-                   // Random color based on emotion
-                   particle.style.backgroundColor = colors[emotion];
-                   
-                   // Random animation duration and delay
-                   const duration = Math.random() * 10 + 10;
-                   const delay = Math.random() * 5;
-                   particle.style.animationDuration = `${duration}s`;
-                   particle.style.animationDelay = `${delay}s`;
-                   
-                   container.appendChild(particle);
+
+           function addToHistory(text, emotion, confidence) {
+               // Hide empty state if this is the first item
+               if (analysisHistory.length === 0) {
+                   emptyHistory.style.display = 'none';
                }
-           }
-       });
-   </script>
-</body>
+
+               // Create history item
+               const historyItem = {
+                   text: text,
+                   emotion: emotion,
+                   confidence: confidence,
+                   timestamp: new Date()
+               };
+
+              // Add to history array (limit to 6 items for display)
+              analysisHistory.unshift(historyItem);
+              if (analysisHistory.length > 6) {
+                  analysisHistory = analysisHistory.slice(0, 6);
+              }
+
+              // Clear history container
+              const historyElements = document.querySelectorAll('.history-item');
+              historyElements.forEach(item => item.remove());
+
+              // Render all history items
+              renderHistoryItems();
+          }
+
+          function renderHistoryItems() {
+              analysisHistory.forEach((item, index) => {
+                  // Create history item element
+                  const historyItemElement = document.createElement('div');
+                  historyItemElement.className = `history-item ${item.emotion.toLowerCase()}`;
+                  historyItemElement.style.animationDelay = `${index * 0.1}s`;
+
+                  // Format timestamp
+                  const formattedTime = item.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                  const formattedDate = item.timestamp.toLocaleDateString();
+
+                  // Truncate text if too long
+                  const truncatedText = item.text.length > 100 ?
+                      item.text.substring(0, 100) + '...' :
+                      item.text;
+
+                  historyItemElement.innerHTML = `
+                      <div class="history-text">${truncatedText}</div>
+                      <div class="history-emotion ${item.emotion.toLowerCase()}">${capitalizeFirstLetter(item.emotion)}</div>
+                      <div class="history-timestamp">${formattedDate} at ${formattedTime}</div>
+                  `;
+
+                  historyContainer.appendChild(historyItemElement);
+
+                  // Animate appearance with delay
+                  setTimeout(() => {
+                      historyItemElement.style.opacity = '1';
+                      historyItemElement.style.transform = 'translateY(0)';
+                  }, index * 100);
+              });
+          }
+
+          function capitalizeFirstLetter(string) {
+              return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+          }
+
+          function shakeElement(element) {
+              element.classList.add('animate__animated', 'animate__shakeX');
+              setTimeout(() => {
+                  element.classList.remove('animate__animated', 'animate__shakeX');
+              }, 1000);
+          }
+
+          function createParticles() {
+           const container = document.getElementById('particles');
+           const emotions = [
+               "neutral", "admiration", "approval", "gratitude", "amusement", "curiosity",
+               "love", "disapproval", "optimism", "anger", "joy", "confusion", "sadness",
+               "disappointment", "realization", "caring", "surprise", "excitement", "disgust",
+               "desire", "fear", "remorse", "embarrassment", "nervousness", "relief", "pride",
+               "grief", "annoyance"
+           ];
+           const colors = {
+               neutral: '#808080',      // Gray
+               admiration: '#ffd700',   // Gold
+               approval: '#32cd32',    // Lime Green
+               gratitude: '#ff69b4',   // Hot Pink
+               amusement: '#ffeb3b',   // Yellow
+               curiosity: '#00ced1',   // Dark Turquoise
+               love: '#ff1493',        // Deep Pink
+               disapproval: '#ff4500', // Orange Red
+               optimism: '#ffa500',    // Orange
+               anger: '#e71d36',       // Red (from original)
+               joy: '#ffc300',         // Bright Yellow (from original)
+               confusion: '#9370db',   // Medium Purple
+               sadness: '#3a86ff',     // Blue (from original)
+               disappointment: '#4682b4', // Steel Blue
+               realization: '#f0e68c', // Khaki
+               caring: '#ff6347',      // Tomato
+               surprise: '#06d6a0',    // Teal (from original)
+               excitement: '#ff00ff',  // Magenta
+               disgust: '#9d4edd',     // Purple (from original)
+               desire: '#dc143c',      // Crimson
+               fear: '#8338ec',        // Violet (from original)
+               remorse: '#4169e1',     // Royal Blue
+               embarrassment: '#ff9999', // Light Red
+               nervousness: '#dda0dd', // Plum
+               relief: '#98fb98',      // Pale Green
+               pride: '#b8860b',       // Dark Goldenrod
+               grief: '#191970',       // Midnight Blue
+               annoyance: '#cd5c5c'    // Indian Red
+           };
+       }
+
+              // Create 30 particles
+              for (let i = 0; i < 30; i++) {
+                  const emotion = emotions[Math.floor(Math.random() * emotions.length)];
+                  const particle = document.createElement('div');
+                  particle.className = 'particle';
+
+                  // Random size between 5 and 20px
+                  const size = Math.random() * 15 + 5;
+                  particle.style.width = `${size}px`;
+                  particle.style.height = `${size}px`;
+
+                  // Random position
+                  particle.style.left = `${Math.random() * 100}vw`;
+                  particle.style.top = `${Math.random() * 100}vh`;
+
+                  // Random color based on emotion
+                  particle.style.backgroundColor = colors[emotion];
+
+                  // Random animation duration and delay
+                  const duration = Math.random() * 10 + 10;
+                  const delay = Math.random() * 5;
+                  particle.style.animationDuration = `${duration}s`;
+                  particle.style.animationDelay = `${delay}s`;
+
+                  container.appendChild(particle);
+              }
+          }
+      );
+    </script>
+  </body>
 </html>
